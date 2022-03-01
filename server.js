@@ -14,7 +14,7 @@ db = require('./db')(); //hack
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 
-var app = express();
+var app = express(); //creates express server
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -67,7 +67,7 @@ router.post('/signin', function (req, res) {
             res.json ({success: true, token: 'JWT ' + token});
         }
         else {
-            res.status(401).send({success: false, msg: 'Authentication failed.'});
+            res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
         }
     }
 });
