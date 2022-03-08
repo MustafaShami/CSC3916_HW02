@@ -93,26 +93,27 @@ router.route('/movies')
         res.json(o);
     }
     )
-    .post(authJwtController.isAuthenticated, function(req, res) {
+    .post(function(req, res) {
         console.log(req.body);
         res = res.status(200);
-        if (req.get('Content-Type')) {
-            res = res.type(req.get('Content-Type'));
-        }
-        var o = getJSONObjectForMovieRequirement(req);
+        // if (req.get('Content-Type')) {
+        //     res = res.type(req.get('Content-Type'));
+        // }
+        var o = getJSONObjectForMovieRequirement(res.status, 'MOVIE SAVED', req);
         res.json(o);
     }
     )
-    .get(authJwtController.isAuthenticated, function(req, res) {
+    .get(function(req, res) {
         console.log(req.body);
         res = res.status(200);
-        if (req.get('Content-Type')) {
-            res = res.type(req.get('Content-Type'));
-        }
-        var o = getJSONObjectForMovieRequirement(req);
+        // if (req.get('Content-Type')) {
+        //     res = res.type(req.get('Content-Type'));
+        // }
+        var o = getJSONObjectForMovieRequirement(res.status, 'GET MOVIES', req);
         res.json(o);
     }
     );
+    //by default it will deny PATCH because not declared in the above route
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
