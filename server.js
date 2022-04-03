@@ -83,7 +83,7 @@ router.route('/movies')
             res.json(o);
         }
     )
-        .put(authJwtController.isAuthenticated, function (req, res) {
+        .put(function (req, res) {
             var user = db.findOne(req.body.username);
             if (!user) {
                 res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
