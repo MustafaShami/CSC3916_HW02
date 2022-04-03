@@ -73,46 +73,59 @@ router.post('/signin', function (req, res) {
 });
 
 router.route('/movies')
-    .delete(authController.isAuthenticated, function(req, res) {
+    .delete(authController.isAuthenticated, function (req, res) {
         console.log(req.body);
-        res = res.status(200);
-        if (req.get('Content-Type')) {
-            res = res.type(req.get('Content-Type'));
+            res = res.status(200);
+            if (req.get('Content-Type')) {
+                res = res.type(req.get('Content-Type'));
+            }
+            var o = getJSONObjectForMovieRequirement(req);
+            res.json(o);
         }
-        var o = getJSONObjectForMovieRequirement(req);
-        res.json(o);
-    }
     )
-    .put(authJwtController.isAuthenticated, function(req, res) {
-        console.log(req.body);
-        res = res.status(200);
-        if (req.get('Content-Type')) {
-            res = res.type(req.get('Content-Type'));
-        }
-        var o = getJSONObjectForMovieRequirement(req);
-        res.json(o);
-    }
-    )
-    .post(function(req, res) {
-        console.log(req.body);
-        res = res.status(200);
-        // if (req.get('Content-Type')) {
-        //     res = res.type(req.get('Content-Type'));
-        // }
-        var o = getJSONObjectForMovieRequirement(res.status, 'MOVIE SAVED', req);
-        res.json(o);
-    }
-    )
-    .get(function(req, res) {
-        console.log(req.body);
-        res = res.status(200);
-        // if (req.get('Content-Type')) {
-        //     res = res.type(req.get('Content-Type'));
-        // }
-        var o = getJSONObjectForMovieRequirement(res.status, 'GET MOVIES', req);
-        res.json(o);
-    }
-    );
+        .put(authJwtController.isAuthenticated, function (req, res) {
+            var user = db.findOne(req.body.username);
+            if (!user) {
+                res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+            } else {
+                if (req.body.password === user.password) {
+                    var userToken = {id: user.id, username: user.username};
+                    var token = jwt.sign(userToken, process.env.SECRET_KEY);
+                } else {
+                    res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
+                }
+            }
+
+            console.log(req.body);
+                res = res.status(200);
+                if (req.get('Content-Type')) {
+                    res = res.type(req.get('Content-Type'));
+                }
+                var o = getJSONObjectForMovieRequirement(req);
+                res.json(o);
+            }
+        )
+        .post(function (req, res) {
+                console.log(req.body);
+                res = res.status(200);
+                // if (req.get('Content-Type')) {
+                //     res = res.type(req.get('Content-Type'));
+                // }
+                var o = getJSONObjectForMovieRequirement(res.status, 'MOVIE SAVED', req);
+                res.json(o);
+            }
+        )
+        .get(function (req, res) {
+                console.log(req.body);
+                res = res.status(200);
+                // if (req.get('Content-Type')) {
+                //     res = res.type(req.get('Content-Type'));
+                // }
+                var o = getJSONObjectForMovieRequirement(res.status, 'GET MOVIES', req);
+                res.json(o);
+            }
+        );
+
     //by default it will deny PATCH because not declared in the above route
 
 app.use('/', router);
